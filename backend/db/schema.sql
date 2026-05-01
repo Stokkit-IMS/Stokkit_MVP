@@ -12,10 +12,13 @@ id SERIAL PRIMARY KEY,
 name TEXT NOT NULL,
 email TEXT UNIQUE NOT NULL,
 password_hash TEXT NOT NULL,
-industry TEXT NOT NULL UNIQUE,
+industry TEXT NOT NULL, /*removed unique - yuo and I register as plumber, the second person will fail*/
 /* role TEXT NOT NULL DEFAULT 'employee', add as a stretch goal */
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+/*industry tag move to organization table - users table to have FK org_id - org table to have business naem, industry, */
+/* database transaction - commit/rollback - start transaction, tell postgres everything we need to finish, in info lost - if something is missing - rollback*/
 
 CREATE TABLE items (
 id SERIAL PRIMARY KEY,
