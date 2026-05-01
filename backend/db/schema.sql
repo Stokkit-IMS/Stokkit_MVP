@@ -12,7 +12,8 @@ id SERIAL PRIMARY KEY,
 name TEXT NOT NULL,
 email TEXT UNIQUE NOT NULL,
 password_hash TEXT NOT NULL,
-industry TEXT NOT NULL, /*removed unique - yuo and I register as plumber, the second person will fail*/
+contact_number INTEGER, 
+/* industry TEXT NOT NULL UNIQUE, (reference to ORGANIZATION table as a stretch goal) */
 /* role TEXT NOT NULL DEFAULT 'employee', add as a stretch goal */
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -22,11 +23,13 @@ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 CREATE TABLE items (
 id SERIAL PRIMARY KEY,
-name TEXT UNIQUE NOT NULL,
+name TEXT UNIQUE NOT NULL, /* normalize input in items.js in QUERIES folder with either LOWER() or ILIKE */
 description TEXT,
 sku TEXT UNIQUE NOT NULL,
-unit TEXT NOT NULL,
+unit TEXT NOT NULL DEFAULT 'items e.g.(boxes, single unit, bottles, etc...)',
+quantity INTEGER NOT NULL DEFAULT 0 CHECK (quantity >= 0),
 low_stock_threshold INTEGER NOT NULL,
+item_photo BYTEA, /* change data type to VARCHAR when image server is acquired */
 user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -36,20 +39,20 @@ id SERIAL PRIMARY KEY,
 name TEXT NOT NULL,
 user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 address TEXT
-); LOCATIONS TABLE AND FOREIGN KEYS ARE COMMENTED OUT, LOCATIONS ARE A STRETCH GOAL */
+); (LOCATIONS TABLE AND FOREIGN KEYS ARE COMMENTED OUT, LOCATIONS ARE A STRETCH GOAL) */
 
 CREATE TABLE inventory (
 id SERIAL PRIMARY KEY,
 item_id INTEGER NOT NULL REFERENCES items(id) ON DELETE CASCADE,
 /* location_id INTEGER NOT NULL REFERENCES locations(id) ON DELETE CASCADE */
-user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
-quantity INTEGER NOT NULL DEFAULT 0 CHECK (quantity >= 0),
+user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 UNIQUE (item_id, location_id)
 );
 
 CREATE TABLE orders (
 id SERIAL PRIMARY KEY,
-supplier_name TEXT,       /* keep simple for now (can normalize later)*/
+supplier_name TEXT,
+supplier_email TEXT UNIQUE,      /* keep simple for now (can normalize later)*/
 status TEXT NOT NULL DEFAULT 'draft',     /* draft, submitted, received, complete */
 created_by INTEGER REFERENCES users(id),
 approved_by INTEGER REFERENCES users(id),    /* for your admin approval flow */
