@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "devserver": "node --watch --env-file=.env server.js",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:schema": "psql -d stokko -f backend/db/schema.sql",
+    "db:seed": "node --env-file=.env backend/db/seed.js",
+    "db:reset": "npm run db:schema && npm run db:seed"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

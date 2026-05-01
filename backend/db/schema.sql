@@ -1,18 +1,18 @@
 DROP TABLE IF EXISTS inventory_transactions;
 DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS inventory;
-DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS items CASCADE;
 /* DROP TABLE IF EXISTS locations;*/
-DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 
 CREATE TABLE users (
 id SERIAL PRIMARY KEY,
 name TEXT NOT NULL,
 email TEXT UNIQUE NOT NULL,
-password_hash TEXT NOT NULL,
-contact_number INTEGER, 
+password TEXT NOT NULL,
+contact_number TEXT, 
 /* industry TEXT NOT NULL UNIQUE, (reference to ORGANIZATION table as a stretch goal) */
 /* role TEXT NOT NULL DEFAULT 'employee', add as a stretch goal */
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -46,7 +46,7 @@ id SERIAL PRIMARY KEY,
 item_id INTEGER NOT NULL REFERENCES items(id) ON DELETE CASCADE,
 /* location_id INTEGER NOT NULL REFERENCES locations(id) ON DELETE CASCADE */
 user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-UNIQUE (item_id, location_id)
+UNIQUE (item_id ) /*add later location_id*/
 );
 
 CREATE TABLE orders (
