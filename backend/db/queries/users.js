@@ -10,8 +10,9 @@ export async function createUser(name, email, password, contact_number) {
   const {
     rows: [user],
   } = await db.query(sql, [name, email, hashedPassword, contact_number]);
-  return user;
+  return user.name + user.email + user.contact_number;
 }
+
 export async function login(email, password) {
   const sql = `
   SELECT *
@@ -26,6 +27,7 @@ export async function login(email, password) {
   if (!isValid) return null;
   return user;
 }
+
 export async function getUserById(id) {
   const sql = `
   SELECT * FROM 
@@ -34,5 +36,16 @@ export async function getUserById(id) {
   const {
     rows: [user],
   } = await db.query(sql, [id]);
+  return user;
+}
+
+export async function getUserByEmail(email) {
+  const sql = `
+  SELECT * FROM
+    users
+  WHERE email = $1`;
+  const {
+    rows: [user],
+  } = await db.query(sql, [email]);
   return user;
 }

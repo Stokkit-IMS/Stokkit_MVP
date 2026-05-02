@@ -52,10 +52,11 @@ UNIQUE (item_id ) /*add later location_id*/
 CREATE TABLE orders (
 id SERIAL PRIMARY KEY,
 supplier_name TEXT,
-supplier_email TEXT UNIQUE,      /* keep simple for now (can normalize later)*/
-status TEXT NOT NULL DEFAULT 'draft',     /* draft, submitted, received, complete */
-created_by INTEGER REFERENCES users(id),
-approved_by INTEGER REFERENCES users(id),    /* for your admin approval flow */
+supplier_email TEXT,      /* keep simple for now (can normalize later)*/
+status TEXT NOT NULL CHECK (status IN('draft', 'submitted', 'received', 'complete')),     /* draft, submitted, received, complete */
+created_by INTEGER NOT NULL REFERENCES users(id),
+approved_by INTEGER REFERENCES users(id),
+user_id INTEGER NOT NULL REFERENCES users(id),     /* for your admin approval flow */
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -74,6 +75,6 @@ item_id INTEGER NOT NULL REFERENCES items(id),
 /* location_id INTEGER REFERENCES locations(id), */
 quantity_change INTEGER NOT NULL,
 reason TEXT NOT NULL, /* 'restock', 'sale', 'waste', 'adjustment' look into ENUM data type(data protection)*/
-user_id INTEGER NOT NULL UNIQUE REFERENCES users(id)  ON DELETE CASCADE,
+user_id INTEGER NOT NULL REFERENCES users(id)  ON DELETE CASCADE,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
